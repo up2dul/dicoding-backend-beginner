@@ -7,20 +7,27 @@ const METHOD_NOT_ALLOWED = 405;
 
 const requestListener = (request, response) => {
   const { method, url } = request;
-  response.setHeader('Content-Type', 'text/html');
+  response.setHeader('Content-Type', 'application/json');
+  response.setHeader('X-Powered-By', 'NodeJS');
 
   if (url === '/') {
     if (method === 'GET') {
       response.statusCode = SUCCESS;
-      response.end('<h1>Welcome to Home page!</h1>');
+      response.end(JSON.stringify({
+        message: 'Welcome to Home page',
+      }));
     } else {
       response.statusCode = METHOD_NOT_ALLOWED;
-      response.end(`<h1>Cannot access with ${method} request</h1>`);
+      response.end(JSON.stringify({
+        message: `Cannot access with ${method} request`,
+      }));
     }
   } else if (url === '/about') {
     if (method === 'GET') {
       response.statusCode = SUCCESS;
-      response.end('<h1>Welcome to About page!</h1>');
+      response.end(JSON.stringify({
+        message: 'Welcome to About page',
+      }));
     } else if (method === 'POST') {
       let body = [];
 
@@ -33,15 +40,21 @@ const requestListener = (request, response) => {
         const { name } = JSON.parse(body);
 
         response.statusCode = SUCCESS;
-        response.end(`<h1>Hii, ${name}! You are on About page</h1>`);
+        response.end(JSON.stringify({
+          message: `Hii, ${name}! You are on About page`,
+        }));
       });
     } else {
       response.statusCode = METHOD_NOT_ALLOWED;
-      response.end(`<h1>Cannot access with ${method} request</h1>`);
+      response.end(JSON.stringify({
+        message: `Cannot access with ${method} request`,
+      }));
     }
   } else {
     response.statusCode = NOT_FOUND;
-    response.end('<h1>Page not found</h1>');
+    response.end(JSON.stringify({
+      message: 'Page not found',
+    }));
   }
 };
 
