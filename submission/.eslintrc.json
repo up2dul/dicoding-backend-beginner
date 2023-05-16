@@ -1,0 +1,22 @@
+{
+  "env": {
+    "browser": true,
+    "commonjs": true,
+    "es2021": true,
+    "node": true
+  },
+  "extends": "eslint:recommended",
+  "overrides": [],
+  "parserOptions": {
+    "ecmaVersion": "latest"
+  },
+  "rules": {
+    "no-console": "warn",
+    "no-unused-vars": "warn",
+    "no-irregular-whitespace": "warn",
+    "comma-dangle": ["warn", "always-multiline"],
+    "quotes": ["warn", "single"],
+    "indent": ["warn", 2],
+    "semi": "warn"
+  }
+}
