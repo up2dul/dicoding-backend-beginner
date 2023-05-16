@@ -4,18 +4,14 @@ const books = require('./books');
 //#region addBookHandler
 const addBookHandler = (request, h) => {
   const { payload } = request;
+  const dateNow = generateDate();
 
   const initialData = {
     id: generateId(),
     finished: payload.readPage === payload.pageCount,
-    insertedAt: generateDate(),
-    updatedAt: this.insertedAt,
+    insertedAt: dateNow,
+    updatedAt: dateNow,
   };
-
-  books.push({
-    ...initialData,
-    ...payload,
-  });
 
   // 400
   // Client tidak melampirkan properti name pada request body.
@@ -38,6 +34,11 @@ const addBookHandler = (request, h) => {
     response.code(400);
     return response;
   }
+
+  books.push({
+    ...initialData,
+    ...payload,
+  });
 
   // 201
   const isSuccess = books
@@ -84,7 +85,7 @@ const getAllBooksHandler = (request, h) => {
 
   const response = h.response({
     status: 'success',
-    data: { books: bookResult },
+    data: { books: bookResult.map(({ id, name, publisher }) => ({ id, name, publisher })) },
   });
   response.code(200);
   return response;
@@ -120,6 +121,7 @@ const editBookByIdHandler = (request, h) => {
   const { payload, params: { bookId } } = request;
 
   const bookIndex = books.findIndex((book) => book.id === bookId);
+  const pageCount = payload.pageCount || books[bookIndex].pageCount;
 
   // 400
   // Client tidak melampirkan properti name pada request body.
@@ -134,7 +136,7 @@ const editBookByIdHandler = (request, h) => {
 
   // 400
   // Client melampirkan nilai properti readPage yang lebih besar dari nilai properti pageCount.
-  if (payload.readPage > books[bookIndex].pageCount) {
+  if (payload.readPage > pageCount) {
     const response = h.response({
       status: 'fail',
       message: 'Gagal memperbarui buku. readPage tidak boleh lebih besar dari pageCount',
@@ -148,6 +150,7 @@ const editBookByIdHandler = (request, h) => {
     books[bookIndex] = {
       ...books[bookIndex],
       ...payload,
+      finished: payload.readPage === pageCount,
       updatedAt: generateDate(),
     };
 
